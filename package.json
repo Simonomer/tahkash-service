@@ -1,0 +1,44 @@
+{
+  "name": "tahkash",
+  "version": "0.0.1",
+  "private": true,
+  "description": "New Swagger API Project",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "app.ts",
+  "scripts": {
+    "build": "npx tsc && copy-files-from-to",
+    "start": "npm run build && node dist/app.js"
+  },
+  "dependencies": {
+    "@types/node": "^14.0.13",
+    "config": "^3.3.1",
+    "copy-files-from-to": "^3.1.1",
+    "express": "^4.12.3",
+    "http-status-codes": "^1.4.0",
+    "lodash": "^4.17.15",
+    "swagger-express-mw": "^0.1.0",
+    "swagger-tools": "^0.10.4",
+    "typeorm": "^0.2.25",
+    "typescript": "^3.9.5",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "should": "^7.1.0",
+    "supertest": "^1.0.0"
+  },
+  "copyFiles": [
+    {
+      "from": "src/api/swagger/swagger.yaml",
+      "to": "dist/api/swagger/swagger.yaml"
+    },
+    {
+      "from": "src/config/default.yaml",
+      "to": "dist/config/default.yaml"
+    }
+  ],
+  "copyFilesSettings": {
+    "whenFileExists": "overwrite"
+  }
+}
