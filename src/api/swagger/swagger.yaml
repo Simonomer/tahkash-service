@@ -2,56 +2,194 @@ swagger: "2.0"
 info:
   version: "0.0.1"
   title: Hello World App
-# during dev, should point to your local machine
 host: localhost:10010
-# basePath prefixes all resource paths 
 basePath: /
-# 
 schemes:
-  # tip: remove http to make production-grade
   - http
   - https
-# format of bodies a client can send (Content-Type)
 consumes:
   - application/json
-# format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
+
+  # -------Form---------
+  /form:
+    x-swagger-router-controller: form.controller
     get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
+      description: Gets all forms
+      operationId: getAllForms
+      tags:
+        - Form
       responses:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
+            type: array
+            items:
+              $ref: '#/definitions/Form'
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+    post:
+      description: Creates a form
+      operationId: createForm
+      tags:
+        - Form
+      parameters:
+        - name: subject
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              link:
+                type: string
+              tags:
+                type: array
+                items:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/Form'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    put:
+      description: Modify form
+      operationId: modifyForm
+      tags:
+        - Form
+      responses:
+        200:
+          description: OK
+
+  # -------Question---------
+  /question/{formId}:
+    x-swagger-router-controller: question.controller
+    post:
+      description: Creates question on a form
+      tags:
+        - Question
+      operationId: createQuestion
+      parameters:
+        - in: path
+          name: formId
+          type: string
+          required: true
+        - in: body
+          name: question
+          schema:
+            $ref: '#/definitions/Question'
+      responses:
+        "200":
+          description: Question created
+          schema:
+            $ref: '#/definitions/Question'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+    get:
+      description: Get all questions per form
+      tags:
+        - Question
+      operationId: getQuestionsForForm
+      parameters:
+        - in: path
+          name: formId
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Question created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Question'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+    delete:
+      description: Deletes a question
+      operationId: deleteQuestion
+      parameters:
+        - in: path
+          name: formId
+          type: string
+          required: true
+      responses:
+        200:
+          description: OK
+
+  /question:
+    put:
+      description: Modify questions
+      operationId: modifyQuestions
+      tags:
+        - Question
+      parameters:
+        - in: body
+          name: questions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Question'
+      responses:
+        "200":
+          description: Question created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Question'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
   /swagger:
     x-swagger-pipe: swagger_raw
-# complex objects have schema definitions
+
+# -------Models---------
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  Form:
+    type: object
+    description: This is represents a form
     properties:
-      message:
+      _id:
         type: string
+      name:
+        type: string
+      link:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+
+  Question:
+    type: object
+    description: This is represents a question
+    properties:
+      _id:
+        type: string
+      form:
+        type: string
+      text:
+        type: string
+      priority:
+        type: number
+
   ErrorResponse:
     required:
       - message
