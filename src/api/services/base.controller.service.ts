@@ -12,4 +12,22 @@ export abstract class BaseControllerService<TContent extends Document> {
 
         return obj;
     }
+
+    async saveMany(data: TContent[]): Promise<TContent[]> {
+        let res = [];
+        data.map(async (curr) => {
+            const obj = new this.model(curr);
+            await obj.save((err) => {
+                console.log(err);
+            })
+
+            res.push(obj);
+        })
+
+        return res;
+    }
+
+    async findAll(): Promise<TContent[]> {
+        return this.model.find({});
+    }
 }
