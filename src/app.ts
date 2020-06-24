@@ -1,5 +1,3 @@
-'use strict';
-
 import YAML from 'yamljs';
 import mongoose from 'mongoose'
 import SwaggerTools from 'swagger-tools';
