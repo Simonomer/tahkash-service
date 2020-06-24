@@ -8,7 +8,7 @@ import SwaggerExpress from 'swagger-express-mw';
 var swaggerDoc = YAML.load('./dist/api/swagger/swagger.yaml');
 
 var app = require('express')();
-mongoose.connect("mongodb://localhost/my_db", {useNewUrlParser: true})
+mongoose.connect("mongodb://localhost/my_db", {useNewUrlParser: true, useUnifiedTopology: true})
 
 mongoose.connection.once('open', () => {
   console.log("we're in!")
@@ -30,6 +30,6 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
 
   var port = process.env.PORT || 10010;
   app.listen(port, () => {
-    console.log('try this:\nhttp://127.0.0.1:' + port + '/docs');
+    console.log('http://127.0.0.1:' + port + '/docs');
   });
 });

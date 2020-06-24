@@ -53,14 +53,21 @@ paths:
                 items:
                   type: string
       responses:
-        "200":
+        "201":
           description: Success
           schema:
             $ref: '#/definitions/Form'
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            type: object
+            properties:
+              form:
+                type: string
+              text:
+                type: string
+              priority:
+                type: number
 
     put:
       description: Modify form
@@ -123,6 +130,8 @@ paths:
     delete:
       description: Deletes a question
       operationId: deleteQuestion
+      tags:
+        - Question
       parameters:
         - in: path
           name: formId
