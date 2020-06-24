@@ -21,6 +21,10 @@ export class QuestionControllerService extends BaseControllerService<IQuestion> 
 
     async deleteQuestion(questionId) {
         const question: IQuestion = await this.model.findByIdAndDelete(questionId);
+        if (!question) {
+            throw Error(`Not found question with the Id: ${questionId}`)
+        }
+
         const higherPriorityQuestions = await this.model.find({
             priority: { $gt: question.priority }
         });
