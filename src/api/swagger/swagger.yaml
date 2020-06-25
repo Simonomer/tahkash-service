@@ -79,7 +79,7 @@ paths:
           description: OK
 
   # -------Question---------
-  /question/{formId}:
+  /form/question/{formId}:
     x-swagger-router-controller: question.controller
     post:
       description: Creates question on a form
@@ -127,6 +127,8 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
+  /question/{questionId}:
+    x-swagger-router-controller: question.controller
     delete:
       description: Deletes a question
       operationId: deleteQuestion
@@ -134,7 +136,7 @@ paths:
         - Question
       parameters:
         - in: path
-          name: formId
+          name: questionId
           type: string
           required: true
       responses:
@@ -142,6 +144,7 @@ paths:
           description: OK
 
   /question:
+    x-swagger-router-controller: question.controller
     put:
       description: Modify questions
       operationId: modifyQuestions

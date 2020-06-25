@@ -16,17 +16,13 @@ SwaggerTools.initializeMiddleware(swaggerDoc, function(middleware) {
   app.use(middleware.swaggerUi());
 });
 
-var config = {
-  appRoot: __dirname // required config
-};
-
-SwaggerExpress.create(config, function(err, swaggerExpress) {
+SwaggerExpress.create({ appRoot: __dirname }, function(err, swaggerExpress) {
   if (err) { throw err; }
 
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || 10010;
+  const port = process.env.PORT || 10010;
   app.listen(port, () => {
     console.log('http://127.0.0.1:' + port + '/docs');
   });

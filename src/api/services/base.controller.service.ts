@@ -1,3 +1,4 @@
+import {omit as _omit} from 'lodash';
 import {Document, Model} from "mongoose";
 
 export abstract class BaseControllerService<TContent extends Document> {
@@ -23,6 +24,16 @@ export abstract class BaseControllerService<TContent extends Document> {
 
             res.push(obj);
         })
+
+        return res;
+    }
+
+    async updateMany(data: TContent[]): Promise<TContent[]> {
+        let res = [];
+        data.map(async (curr) => {
+            const obj = await this.model.findOneAndUpdate({_id: curr._id}, _omit(curr, '_id'));
+            res.push(obj);
+        });
 
         return res;
     }

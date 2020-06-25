@@ -30,7 +30,6 @@ export class QuestionControllerService extends BaseControllerService<IQuestion> 
         });
 
         higherPriorityQuestions.map(currentQuestion => ({...currentQuestion, priority: currentQuestion.priority - 1}));
-        await this.saveMany(higherPriorityQuestions);
-        return this.findAll();
+        await this.updateMany(higherPriorityQuestions);
     }
 }

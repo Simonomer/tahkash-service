@@ -19,13 +19,13 @@ export async function createQuestion(req, res) {
 export async function modifyQuestions(req, res) {
     const service = new QuestionControllerService();
     const questions = req.body;
-    const updatedQuestions = await service.saveMany(questions);
+    const updatedQuestions = await service.updateMany(questions);
     await res.status(statusCodes.OK).json(updatedQuestions)
 }
 
 export async function deleteQuestion(req, res) {
     const service = new QuestionControllerService();
     const questionId = req.swagger.params.questionId.value;
-    const updatedQuestions = await service.deleteQuestion(questionId);
-    await res.status(statusCodes.OK).json(updatedQuestions)
+    await service.deleteQuestion(questionId);
+    await res.status(statusCodes.OK).json({_id: questionId})
 }
