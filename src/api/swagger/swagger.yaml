@@ -16,23 +16,6 @@ paths:
   # -------Form---------
   /form:
     x-swagger-router-controller: form.controller
-    get:
-      description: Gets all forms
-      operationId: getAllForms
-      tags:
-        - Form
-      responses:
-        "200":
-          description: Success
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Form'
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
     post:
       description: Creates a form
       operationId: createForm
@@ -77,6 +60,32 @@ paths:
       responses:
         200:
           description: OK
+
+  /form/{expand}:
+    x-swagger-router-controller: form.controller
+    get:
+      description: Gets all forms
+      operationId: getAllForms
+      tags:
+        - Form
+      parameters:
+        - name: expand
+          in: path
+          description: Whether or not to return the tags
+          required: true
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Form'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   # -------Question---------
   /form/question/{formId}:
@@ -169,6 +178,75 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
+  # -------Question---------
+  /tag:
+    x-swagger-router-controller: tag.controller
+    post:
+      description: Creates a tag
+      operationId: createTag
+      tags:
+        - Tag
+      parameters:
+        - in: body
+          name: tag
+          schema:
+            $ref: '#/definitions/Tag'
+      responses:
+        "200":
+          description: Tag created
+          schema:
+            $ref: '#/definitions/Tag'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /tag/{tagId}:
+    x-swagger-router-controller: tag.controller
+    put:
+      description: Modifies a tag
+      tags:
+        - Tag
+      parameters:
+        - in: path
+          name: tagId
+          type: string
+          required: true
+        - in: body
+          name: tag
+          schema:
+            $ref: '#/definitions/Tag'
+      responses:
+        "200":
+          description: Tag created
+          schema:
+            $ref: '#/definitions/Tag'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+    delete:
+      description: Deletes an existing tag
+      tags:
+        - Tag
+      parameters:
+        - in: path
+          name: tagId
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Tag created
+          schema:
+            $ref: '#/definitions/Tag'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+
+
   /swagger:
     x-swagger-pipe: swagger_raw
 
@@ -201,6 +279,17 @@ definitions:
         type: string
       priority:
         type: number
+
+  Tag:
+    type: object
+    description: This is represents a tag
+    properties:
+      _id:
+        type: string
+      text:
+        type: string
+      group:
+        type: string
 
   ErrorResponse:
     required:

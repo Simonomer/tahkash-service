@@ -41,4 +41,8 @@ export abstract class BaseControllerService<TContent extends Document> {
     async findAll(): Promise<TContent[]> {
         return this.model.find({});
     }
+
+    async deleteById(id: string): Promise<TContent> {
+        return this.model.findByIdAndDelete(id);
+    }
 }

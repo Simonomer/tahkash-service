@@ -18,6 +18,12 @@ export async function modifyForm(req, res) {
 
 export async function getAllForms(req, res) {
     const service = new FormControllerService();
-    const forms = await service.findAll();
-    await res.status(statusCodes.OK).json(forms);
+    const expand: boolean = req.swagger.params.expand.value;
+    if (expand) {
+        const forms = await service.getFormsWithTheirTags();
+        await res.status(statusCodes.OK).json(forms);
+    } else {
+        const forms = await service.findAll();
+        await res.status(statusCodes.OK).json(forms);
+    }
 }

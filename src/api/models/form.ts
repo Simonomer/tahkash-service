@@ -9,7 +9,7 @@ export interface IForm extends Document {
 const formSchema: Schema = new Schema({
     name: { type: String, required: true },
     link: { type: String },
-    tags: { type: [String], default: [] }
+    tags: { type: [Schema.Types.ObjectId], default: [] }
 })
 
 export default mongoose.model<IForm>('Form', formSchema);
