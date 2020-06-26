@@ -43,23 +43,28 @@ paths:
         default:
           description: Error
           schema:
-            type: object
-            properties:
-              form:
-                type: string
-              text:
-                type: string
-              priority:
-                type: number
+            $ref: "#/definitions/ErrorResponse"
 
     put:
       description: Modify form
       operationId: modifyForm
       tags:
         - Form
+      parameters:
+        - in: body
+          name: form
+          required: true
+          schema:
+            $ref: '#/definitions/Form'
       responses:
-        200:
-          description: OK
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/Form'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /form/{expand}:
     x-swagger-router-controller: form.controller
@@ -86,6 +91,9 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /form/tag/{tagId}:
+    x-swagger-router-controller: form.controller
 
   # -------Question---------
   /form/question/{formId}:
@@ -178,7 +186,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  # -------Question---------
+  # -------Tag---------
   /tag:
     x-swagger-router-controller: tag.controller
     post:
@@ -205,6 +213,7 @@ paths:
     x-swagger-router-controller: tag.controller
     put:
       description: Modifies a tag
+      operationId: modifyTag
       tags:
         - Tag
       parameters:
@@ -228,6 +237,7 @@ paths:
 
     delete:
       description: Deletes an existing tag
+      operationId: deleteTag
       tags:
         - Tag
       parameters:

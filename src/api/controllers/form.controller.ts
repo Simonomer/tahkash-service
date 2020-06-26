@@ -10,9 +10,8 @@ export async function createForm(req, res) {
 
 export async function modifyForm(req, res) {
     const service = new FormControllerService();
-    const formId = req.swagger.params.formId.value;
     const form = req.body;
-    const modifiedForm = await service.save({...form, _id: formId});
+    const modifiedForm = await service.updateMany([form]);
     await res.status(statusCodes.OK).json(modifiedForm);
 }
 

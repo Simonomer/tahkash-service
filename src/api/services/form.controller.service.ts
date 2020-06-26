@@ -1,5 +1,5 @@
 import {Model} from "mongoose";
-import {flatMap as _flatMap, uniq as _uniq, groupBy as _groupBy} from 'lodash';
+import {flatMap as _flatMap, uniq as _uniq, groupBy as _groupBy, filter as _filter} from 'lodash';
 
 import model from '../models/form';
 import {IForm} from "../models/form";
@@ -21,5 +21,12 @@ export class FormControllerService extends BaseControllerService<IForm> {
         const foundTags = _groupBy(await tagService.model.find({ _id: { $in: uniqTagIds } }), '_id');
         return forms.map(form => ({...form.toObject(), tags: _flatMap(form.tags, tagId => foundTags[tagId])}))
     }
+
+    async deleteTagFromForms(tagId: string) {
+        const formsContainingTagId: IForm[] = await this.model.find({tags: tagId});
+        const formsWithoutTagId = formsContainingTagId.map(form => ({...form.toObject(), tags: _filter(form.tags, tag => tag !== tagId)} as IForm));
+        await this.updateMany(formsWithoutTagId);
+    }
+
 
 }
