@@ -13,7 +13,8 @@ export class FormControllerService extends BaseControllerService<IForm> {
     model: Model<IForm> = model;
 
     async addForm(name: string, link?: string, tags?: string[]): Promise<IForm> {
-        return await this.save({ name, link, tags } as IForm)
+        const nameAfterDuplicateCheck = await this.generateDuplicateFormName(name);
+        return await this.save({ name: nameAfterDuplicateCheck, link, tags } as IForm)
     }
 
     async getFormsWithTheirTags() {
@@ -35,7 +36,8 @@ export class FormControllerService extends BaseControllerService<IForm> {
         const questions: IQuestion[] = await questionService.getQuestionsForForm(formId);
 
         const currentForm = await this.model.findById(formId);
-        const newForm: IForm = await this.save(_omit(currentForm.toObject(), ['_id', 'link']));
+        const newFormName = this.generateDuplicateFormName(currentForm.name);
+        const newForm: IForm = await this.save({..._omit(currentForm.toObject(), ['_id', 'link']), name: newFormName});
 
         questions.map(async (question) => {
             const newQuestion = {..._omit(question.toObject(), '_id'), form: newForm._id};
@@ -43,5 +45,24 @@ export class FormControllerService extends BaseControllerService<IForm> {
         })
 
         return newForm;
+    }
+
+    async generateDuplicateFormName(designatedName: string) {
+        const formNames = (await this.findAll()).map((form: IForm) => form.name);
+        for (let i = 0; i < formNames.length; i++) {
+            if (formNames.includes(designatedName)) {
+                const currentIndex = designatedName.search("\\((\\d)\\)") + 1;
+                if (currentIndex !== 0) {
+                    designatedName = designatedName.replace(`(${designatedName[currentIndex]})`, `(${1 + + designatedName[currentIndex]})`)
+                } else {
+                    designatedName = `${designatedName} (1)`
+                }
+            }
+            else {
+                return designatedName;
+            }
+        }
+
+        return designatedName;
     }
 }
