@@ -66,6 +66,32 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /form/duplicate:
+    x-swagger-router-controller: form.controller
+    post:
+      description: Duplicates a form by it's id
+      operationId: duplicateForm
+      tags:
+        - Form
+      parameters:
+        - in: body
+          name: id
+          required: true
+          schema:
+            type: object
+            properties:
+              _id:
+                type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/Form'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /form/{expand}:
     x-swagger-router-controller: form.controller
     get:
@@ -92,8 +118,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /form/tag/{tagId}:
-    x-swagger-router-controller: form.controller
 
   # -------Question---------
   /form/question/{formId}:

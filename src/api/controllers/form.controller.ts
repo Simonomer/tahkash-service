@@ -26,3 +26,10 @@ export async function getAllForms(req, res) {
         await res.status(statusCodes.OK).json(forms);
     }
 }
+
+export async function duplicateForm(req, res) {
+    const service = new FormControllerService();
+    const formId = req.body._id;
+    const createdFormId = await service.duplicateForm(formId)
+    await res.status(statusCodes.CREATED).json(createdFormId);
+}
