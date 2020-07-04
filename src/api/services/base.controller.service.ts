@@ -30,10 +30,10 @@ export abstract class BaseControllerService<TContent extends Document> {
 
     async updateMany(data: TContent[]): Promise<TContent[]> {
         let res = [];
-        data.map(async (curr) => {
-            const obj = await this.model.findOneAndUpdate({_id: curr._id}, _omit(curr, '_id'));
+        for (let item of data) {
+            const obj = await this.model.findOneAndUpdate({_id: item._id}, _omit(item, '_id'));
             res.push(obj);
-        });
+        }
 
         return res;
     }

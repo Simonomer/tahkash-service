@@ -11,8 +11,9 @@ export async function createForm(req, res) {
 export async function modifyForm(req, res) {
     const service = new FormControllerService();
     const form = req.body;
-    const modifiedForm = await service.updateMany([form]);
-    await res.status(statusCodes.OK).json(modifiedForm);
+    const modifiedForm = (await service.updateMany([form]))[0].toObject();
+    const extendedForm = await service.getFormWithTags(modifiedForm._id.toString());
+    await res.status(statusCodes.OK).json(extendedForm);
 }
 
 export async function getAllForms(req, res) {
@@ -32,4 +33,11 @@ export async function duplicateForm(req, res) {
     const formId = req.body._id;
     const createdFormId = await service.duplicateForm(formId)
     await res.status(statusCodes.CREATED).json(createdFormId);
+}
+
+export async function getForm(req, res) {
+    const service = new FormControllerService();
+    const formId: string = req.swagger.params.formId.value;
+    const form = await service.getFormWithTags(formId);
+    await res.status(statusCodes.OK).json(form);
 }

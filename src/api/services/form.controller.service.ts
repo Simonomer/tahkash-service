@@ -17,6 +17,11 @@ export class FormControllerService extends BaseControllerService<IForm> {
         return await this.save({ name: nameAfterDuplicateCheck, link, tags } as IForm)
     }
 
+    async getFormWithTags(formId: string) {
+        const allForms = await this.getFormsWithTheirTags();
+        return allForms.find(form => form._id.toString() === formId);
+    }
+
     async getFormsWithTheirTags() {
         const tagService = new TagControllerService();
         const forms: IForm[] = await this.findAll();

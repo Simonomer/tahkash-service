@@ -24,3 +24,9 @@ export async function deleteTag(req, res) {
     await formsService.deleteTagFromForms(tagId);
     await res.status(statusCodes.OK).json(deletedItem);
 }
+
+export async function getTags(req, res) {
+    const service = new TagControllerService();
+    const tags = await service.findAll();
+    await res.status(statusCodes.OK).json(tags);
+}

@@ -92,7 +92,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /form/{expand}:
+  /forms/{expand}:
     x-swagger-router-controller: form.controller
     get:
       description: Gets all forms
@@ -113,6 +113,29 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Form'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /form/{formId}:
+    x-swagger-router-controller: form.controller
+    get:
+      description: Get form with it's tags
+      operationId: getForm
+      tags:
+        - Form
+      parameters:
+        - name: formId
+          in: path
+          description: The form id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/Form'
         default:
           description: Error
           schema:
@@ -224,10 +247,29 @@ paths:
           schema:
             $ref: '#/definitions/Tag'
       responses:
-        "200":
+        "201":
           description: Tag created
           schema:
             $ref: '#/definitions/Tag'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /tags:
+    x-swagger-router-controller: tag.controller
+    get:
+      description: Gets all tags
+      operationId: getTags
+      tags:
+        - Tag
+      responses:
+        "200":
+          description: Tag created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Tag'
         default:
           description: Error
           schema:
@@ -290,8 +332,6 @@ definitions:
     type: object
     description: This is represents a form
     properties:
-      _id:
-        type: string
       name:
         type: string
       link:
@@ -305,8 +345,6 @@ definitions:
     type: object
     description: This is represents a question
     properties:
-      _id:
-        type: string
       form:
         type: string
       text:
@@ -318,8 +356,6 @@ definitions:
     type: object
     description: This is represents a tag
     properties:
-      _id:
-        type: string
       text:
         type: string
       group:
