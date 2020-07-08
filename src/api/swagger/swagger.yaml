@@ -321,6 +321,50 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
+  # -------Tag---------
+  /answers:
+    x-swagger-router-controller: answer.controller
+    post:
+      description: Post answers
+      operationId: postAnswers
+      tags:
+        - Answer
+      parameters:
+        - in: body
+          name: answers
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Answer'
+      responses:
+        "201":
+          description: answer created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Answer'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /answers/{formId}:
+    x-swagger-router-controller: answer.controller
+    get:
+      description: Gets all the answers mapped with it's questions all by form id
+      operationId: getAnswersForForm
+      tags:
+        - Answer
+      parameters:
+        - in: path
+          name: formId
+          type: string
+          required: true
+      responses:
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
 
 
   /swagger:
@@ -359,6 +403,17 @@ definitions:
       text:
         type: string
       group:
+        type: string
+
+  Answer:
+    type: object
+    description: This is represents a amswer
+    properties:
+      text:
+        type: string
+      rating:
+        type: number
+      question:
         type: string
 
   ErrorResponse:
