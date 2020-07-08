@@ -14,7 +14,7 @@ export class FormControllerService extends BaseControllerService<IForm> {
 
     async addForm(name: string, link?: string, tags?: string[]): Promise<IForm> {
         const nameAfterDuplicateCheck = await this.generateDuplicateFormName(name);
-        return await this.save({ name: nameAfterDuplicateCheck, link, tags } as IForm)
+        return await this.save({ name: nameAfterDuplicateCheck, link, tags, creationTime: Date.now() } as IForm)
     }
 
     async getFormWithTags(formId: string) {
@@ -41,8 +41,8 @@ export class FormControllerService extends BaseControllerService<IForm> {
         const questions: IQuestion[] = await questionService.getQuestionsForForm(formId);
 
         const currentForm = await this.model.findById(formId);
-        const newFormName = this.generateDuplicateFormName(currentForm.name);
-        const newForm: IForm = await this.save({..._omit(currentForm.toObject(), ['_id', 'link']), name: newFormName});
+        const newFormName = await this.generateDuplicateFormName(currentForm.name);
+        const newForm: IForm = await this.save({..._omit(currentForm.toObject(), ['_id', 'link']), name: newFormName, creationTime: Date.now()} as IForm);
 
         questions.map(async (question) => {
             const newQuestion = {..._omit(question.toObject(), '_id'), form: newForm._id};
