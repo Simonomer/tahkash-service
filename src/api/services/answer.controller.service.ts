@@ -4,7 +4,6 @@ import model from '../models/answer';
 import {BaseControllerService} from "./base.controller.service";
 import {IAnswer} from "../models/answer";
 import {QuestionControllerService} from "./question.controller.service";
-import {IQuestion} from "../models/question";
 
 export class AnswerControllerService extends BaseControllerService<IAnswer>{
 
@@ -25,7 +24,7 @@ export class AnswerControllerService extends BaseControllerService<IAnswer>{
 
         for (const question of formQuestions) {
             const answersPerThisQuestions = await this.model.find({question: question._id})
-            questionsWithAnswers.push({...question, answers: answersPerThisQuestions});
+            questionsWithAnswers.push({...question.toObject(), answers: answersPerThisQuestions});
         }
 
         return questionsWithAnswers;
