@@ -20,7 +20,7 @@
     "http-status-codes": "^1.4.0",
     "lodash": "^4.17.15",
     "mongoose": "^5.9.20",
-    "swagger-express-mw": "^0.1.0",
+    "swagger-express-mw": "^0.7.0",
     "swagger-tools": "^0.10.4",
     "typescript": "^3.9.5",
     "yamljs": "^0.3.0"
