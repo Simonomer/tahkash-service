@@ -41,3 +41,10 @@ export async function getForm(req, res) {
     const form = await service.getFormWithTags(formId);
     await res.status(statusCodes.OK).json(form);
 }
+
+export async function deleteForm(req, res) {
+    const service = new FormControllerService();
+    const formId: string = req.swagger.params.formId.value;
+    const response = await service.deleteById(formId);
+    await res.status(statusCodes.OK).json(response);
+}

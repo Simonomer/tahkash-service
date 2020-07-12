@@ -141,6 +141,28 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+    delete:
+      description: Deletes a form by id
+      operationId: deleteForm
+      tags:
+        - Form
+      parameters:
+        - name: formId
+          in: path
+          description: The form id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/Form'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+
 
   # -------Question---------
   /form/question/{formId}:
