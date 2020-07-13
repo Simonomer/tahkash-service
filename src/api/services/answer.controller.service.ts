@@ -23,7 +23,7 @@ export class AnswerControllerService extends BaseControllerService<IAnswer>{
         let questionsWithAnswers = [];
 
         for (const question of formQuestions) {
-            const answersPerThisQuestions = await this.model.find({question: question._id})
+            const answersPerThisQuestions = await this.model.find({questionId: question._id})
             questionsWithAnswers.push({...question.toObject(), answers: answersPerThisQuestions});
         }
 

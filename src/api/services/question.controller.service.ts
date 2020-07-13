@@ -1,22 +1,24 @@
 import { Model } from "mongoose";
+import { flatMap as _flatMap } from 'lodash';
 
 import model from '../models/question';
 import { IQuestion } from '../models/question';
 import { BaseControllerService } from "./base.controller.service";
+import {FormControllerService} from "./form.controller.service";
 
 export class QuestionControllerService extends BaseControllerService<IQuestion> {
 
     model: Model<IQuestion> = model;
 
-    async getQuestionsForForm(formId: string): Promise<IQuestion[]> {
+    async getQuestionsForBucket(bucketId: string): Promise<IQuestion[]> {
         return this.model.find({
-            form: formId
+            bucketId: bucketId
         })
     }
 
-    async addQuestionToForm(text, formId) {
-        const currentQuestions = await this.getQuestionsForForm(formId);
-        return await this.save({text, form: formId, priority: currentQuestions.length} as IQuestion);
+    async addQuestionToBucket(text: string, bucketId: string) {
+        const currentQuestions = await this.getQuestionsForBucket(bucketId);
+        return await this.save({text, bucketId, priority: currentQuestions.length} as IQuestion);
     }
 
     async deleteQuestion(questionId) {
@@ -31,5 +33,18 @@ export class QuestionControllerService extends BaseControllerService<IQuestion> 
 
         higherPriorityQuestions.map(currentQuestion => ({...currentQuestion, priority: currentQuestion.priority - 1}));
         await this.updateMany(higherPriorityQuestions);
+    }
+
+    async getQuestionsForForm(formId: string): Promise<IQuestion[]> {
+        let questions = [];
+        const formService = new FormControllerService();
+        const currentForm = await formService.model.findById(formId);
+
+        for (let bucketId of currentForm.bucketIds) {
+            const questionsForThisBucket = await this.getQuestionsForBucket(bucketId);
+            questions.push(questionsForThisBucket);
+        }
+
+        return _flatMap(questions);
     }
 }

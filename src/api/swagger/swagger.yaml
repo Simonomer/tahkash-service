@@ -25,16 +25,7 @@ paths:
         - name: subject
           in: body
           schema:
-            type: object
-            properties:
-              name:
-                type: string
-              link:
-                type: string
-              tags:
-                type: array
-                items:
-                  type: string
+            $ref: "#/definitions/Form"
       responses:
         "201":
           description: Success
@@ -102,7 +93,7 @@ paths:
       parameters:
         - name: expand
           in: path
-          description: Whether or not to return the tags
+          description: Whether or not to return the buckets
           required: true
           type: boolean
           default: true
@@ -112,7 +103,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Form'
+              $ref: "#/definitions/ExtendedForm"
         default:
           description: Error
           schema:
@@ -121,7 +112,7 @@ paths:
   /form/{formId}:
     x-swagger-router-controller: form.controller
     get:
-      description: Get form with it's tags
+      description: Get form with it's buckets
       operationId: getForm
       tags:
         - Form
@@ -135,7 +126,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/Form'
+            $ref: '#/definitions/ExtendedForm'
         default:
           description: Error
           schema:
@@ -165,7 +156,7 @@ paths:
 
 
   # -------Question---------
-  /form/question/{formId}:
+  /form/question/{bucketId}:
     x-swagger-router-controller: question.controller
     post:
       description: Creates question on a form
@@ -174,13 +165,16 @@ paths:
       operationId: createQuestion
       parameters:
         - in: path
-          name: formId
+          name: bucketId
           type: string
           required: true
         - in: body
           name: question
           schema:
-            $ref: '#/definitions/Question'
+            type: object
+            properties:
+              text:
+                type: string
       responses:
         "200":
           description: Question created
@@ -191,6 +185,33 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
+  /bucket/questions/{bucketId}:
+    x-swagger-router-controller: question.controller
+    get:
+      description: Get all questions per form
+      tags:
+        - Question
+      operationId: getQuestionsForBucket
+      parameters:
+        - in: path
+          name: bucketId
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Question'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+
+  /form/questions/{formId}:
+    x-swagger-router-controller: question.controller
     get:
       description: Get all questions per form
       tags:
@@ -203,7 +224,7 @@ paths:
           required: true
       responses:
         "200":
-          description: Question created
+          description: Success
           schema:
             type: array
             items:
@@ -255,95 +276,95 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  # -------Tag---------
-  /tag:
-    x-swagger-router-controller: tag.controller
+  # -------Bucket---------
+  /bucket:
+    x-swagger-router-controller: bucket.controller
     post:
-      description: Creates a tag
-      operationId: createTag
+      description: Creates a bucket
+      operationId: createBucket
       tags:
-        - Tag
+        - Bucket
       parameters:
         - in: body
-          name: tag
+          name: bucket
           schema:
-            $ref: '#/definitions/Tag'
+            $ref: '#/definitions/Bucket'
       responses:
         "201":
-          description: Tag created
+          description: Bucket created
           schema:
-            $ref: '#/definitions/Tag'
+            $ref: '#/definitions/Bucket'
         default:
           description: Error
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  /tags:
-    x-swagger-router-controller: tag.controller
+  /buckets:
+    x-swagger-router-controller: bucket.controller
     get:
-      description: Gets all tags
-      operationId: getTags
+      description: Gets all buckets
+      operationId: getBuckets
       tags:
-        - Tag
+        - Bucket
       responses:
         "200":
-          description: Tag created
+          description: Bucket created
           schema:
             type: array
             items:
-              $ref: '#/definitions/Tag'
+              $ref: '#/definitions/Bucket'
         default:
           description: Error
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  /tag/{tagId}:
-    x-swagger-router-controller: tag.controller
+  /bucket/{bucketId}:
+    x-swagger-router-controller: bucket.controller
     put:
-      description: Modifies a tag
-      operationId: modifyTag
+      description: Modifies a bucket
+      operationId: modifyBucket
       tags:
-        - Tag
+        - Bucket
       parameters:
         - in: path
-          name: tagId
+          name: bucketId
           type: string
           required: true
         - in: body
-          name: tag
+          name: bucket
           schema:
-            $ref: '#/definitions/Tag'
+            $ref: '#/definitions/Bucket'
       responses:
         "200":
-          description: Tag created
+          description: Bucket created
           schema:
-            $ref: '#/definitions/Tag'
+            $ref: '#/definitions/Bucket'
         default:
           description: Error
           schema:
             $ref: '#/definitions/ErrorResponse'
 
     delete:
-      description: Deletes an existing tag
-      operationId: deleteTag
+      description: Deletes an existing bucket
+      operationId: deleteBucket
       tags:
-        - Tag
+        - Bucket
       parameters:
         - in: path
-          name: tagId
+          name: bucketId
           type: string
           required: true
       responses:
         "200":
-          description: Tag created
+          description: Bucket created
           schema:
-            $ref: '#/definitions/Tag'
+            $ref: '#/definitions/Bucket'
         default:
           description: Error
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  # -------Tag---------
+  # -------Answer---------
   /answers:
     x-swagger-router-controller: answer.controller
     post:
@@ -402,29 +423,40 @@ definitions:
         type: string
       link:
         type: string
-      tags:
+      bucketIds:
         type: array
         items:
           type: string
+
+  ExtendedForm:
+    type: object
+    description: Represents a form with extended buckets instead of ids
+    properties:
+      name:
+        type: string
+      link:
+        type: string
+      buckets:
+        type: array
+        items:
+          $ref: "#/definitions/Bucket"
 
   Question:
     type: object
     description: This is represents a question
     properties:
-      form:
+      bucketId:
         type: string
       text:
         type: string
       priority:
         type: number
 
-  Tag:
+  Bucket:
     type: object
-    description: This is represents a tag
+    description: This is represents a bucket
     properties:
-      text:
-        type: string
-      group:
+      name:
         type: string
 
   Answer:
@@ -435,7 +467,7 @@ definitions:
         type: string
       rating:
         type: number
-      question:
+      questionId:
         type: string
 
   ErrorResponse:
