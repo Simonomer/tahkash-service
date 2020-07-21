@@ -12,9 +12,9 @@ export class FormControllerService extends BaseControllerService<IForm> {
 
     model: Model<IForm> = model;
 
-    async addForm(name: string, link?: string, bucketIds?: string[]): Promise<IForm> {
-        const nameAfterDuplicateCheck = await this.generateDuplicateFormName(name);
-        return await this.save({ name: nameAfterDuplicateCheck, link, bucketIds, creationTime: Date.now() } as IForm)
+    async addForm(form: IForm): Promise<IForm> {
+        const nameAfterDuplicateCheck = await this.generateDuplicateFormName(form.name);
+        return await this.save({...form, name: nameAfterDuplicateCheck, creationTime: Date.now()} as IForm);
     }
 
     async getFormWithBuckets(formId: string) {
@@ -22,12 +22,12 @@ export class FormControllerService extends BaseControllerService<IForm> {
         return allForms.find(form => form._id.toString() === formId);
     }
 
-    async getFormsWithTheirBuckets() {
+    async getFormsWithTheirBuckets(query: object = {}) {
         const bucketService = new BucketControllerService();
-        const forms: IForm[] = await this.findAll();
+        const forms: IForm[] = await this.model.find(query);
         const uniqBucketIds = _uniq(_flatMap(forms, form => form.bucketIds));
         const foundBuckets = _groupBy(await bucketService.model.find({ _id: { $in: uniqBucketIds } }), '_id');
-        return forms.map(form => ({...form.toObject(), bucketIds: _flatMap(form.bucketIds, bucketId => foundBuckets[bucketId])} as IForm))
+        return forms.map(form => ({...form.toObject(), buckets: _flatMap(form.bucketIds, bucketId => foundBuckets[bucketId])} as IForm))
     }
 
     async deleteBucketIdFromForms(bucketId: string) {

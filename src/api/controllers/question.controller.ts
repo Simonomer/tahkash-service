@@ -1,11 +1,19 @@
 import statusCodes from 'http-status-codes'
 import {QuestionControllerService} from "../services/question.controller.service";
 
-export async function createQuestion(req, res) {
+export async function createQuestionForBucket(req, res) {
     const service = new QuestionControllerService();
     const bucketId = req.swagger.params.bucketId.value;
     const question = req.body;
     const createdQuestion = await service.addQuestionToBucket(question.text, bucketId);
+    await res.status(statusCodes.CREATED).json(createdQuestion)
+}
+
+export async function createQuestionForForm(req, res) {
+    const service = new QuestionControllerService();
+    const formId = req.swagger.params.formId.value;
+    const question = req.body;
+    const createdQuestion = await service.addQuestionToForm(question.text, formId);
     await res.status(statusCodes.CREATED).json(createdQuestion)
 }
 

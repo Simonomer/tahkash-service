@@ -83,6 +83,33 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /forms/_search:
+    x-swagger-router-controller: form.controller
+    post:
+      description: Search forms
+      operationId: searchForms
+      tags:
+        - Form
+      parameters:
+        - name: query
+          in: body
+          description: the query
+          required: true
+          schema:
+            type: object
+            default: {}
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ExtendedForm"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /forms/{expand}:
     x-swagger-router-controller: form.controller
     get:
@@ -108,6 +135,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
 
   /form/{formId}:
     x-swagger-router-controller: form.controller
@@ -156,13 +184,42 @@ paths:
 
 
   # -------Question---------
-  /form/question/{bucketId}:
+  /form/question/{formId}:
     x-swagger-router-controller: question.controller
     post:
       description: Creates question on a form
       tags:
         - Question
-      operationId: createQuestion
+      operationId: createQuestionForForm
+      parameters:
+        - in: path
+          name: formId
+          type: string
+          required: true
+        - in: body
+          name: question
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+      responses:
+        "200":
+          description: Question created
+          schema:
+            $ref: '#/definitions/Question'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /bucket/question/{bucketId}:
+    x-swagger-router-controller: question.controller
+    post:
+      description: Creates question on a bucket
+      tags:
+        - Question
+      operationId: createQuestionForBucket
       parameters:
         - in: path
           name: bucketId
@@ -318,6 +375,33 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
+  /buckets/_search:
+    x-swagger-router-controller: bucket.controller
+    post:
+      description: Search forms
+      operationId: searchBuckets
+      tags:
+        - Bucket
+      parameters:
+        - name: query
+          in: body
+          description: the query
+          required: true
+          schema:
+            type: object
+            default: {}
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Bucket'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /bucket/{bucketId}:
     x-swagger-router-controller: bucket.controller
     put:
@@ -421,8 +505,12 @@ definitions:
     properties:
       name:
         type: string
-      link:
+      course:
         type: string
+        default: '1'
+      week:
+        type: string
+        default: '1'
       bucketIds:
         type: array
         items:
@@ -434,7 +522,9 @@ definitions:
     properties:
       name:
         type: string
-      link:
+      course:
+        type: string
+      week:
         type: string
       buckets:
         type: array
@@ -457,6 +547,10 @@ definitions:
     description: This is represents a bucket
     properties:
       name:
+        type: string
+      course:
+        type: string
+      week:
         type: string
 
   Answer:

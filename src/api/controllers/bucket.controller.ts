@@ -30,3 +30,10 @@ export async function getBuckets(req, res) {
     const buckets = await service.findAll();
     await res.status(statusCodes.OK).json(buckets);
 }
+
+export async function searchBuckets(req, res) {
+    const service = new BucketControllerService();
+    const query = req.body;
+    const buckets = await service.model.find(query);
+    await res.status(statusCodes.OK).json(buckets);
+}

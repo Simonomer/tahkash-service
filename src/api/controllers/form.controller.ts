@@ -4,7 +4,7 @@ import {FormControllerService} from "../services/form.controller.service";
 export async function createForm(req, res) {
     const service = new FormControllerService();
     const form = req.body;
-    const addedForm = await service.addForm(form.name, form.link, form.bucketIds);
+    const addedForm = await service.addForm(form);
     await res.status(statusCodes.CREATED).json(addedForm);
 }
 
@@ -47,4 +47,11 @@ export async function deleteForm(req, res) {
     const formId: string = req.swagger.params.formId.value;
     const response = await service.deleteById(formId);
     await res.status(statusCodes.OK).json(response);
+}
+
+export async function searchForms(req, res) {
+    const service = new FormControllerService();
+    const query = req.body;
+    const forms = await service.getFormsWithTheirBuckets(query);
+    await res.status(statusCodes.OK).json(forms);
 }

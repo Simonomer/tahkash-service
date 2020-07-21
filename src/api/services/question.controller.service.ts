@@ -10,15 +10,14 @@ export class QuestionControllerService extends BaseControllerService<IQuestion> 
 
     model: Model<IQuestion> = model;
 
-    async getQuestionsForBucket(bucketId: string): Promise<IQuestion[]> {
-        return this.model.find({
-            bucketId: bucketId
-        })
-    }
-
     async addQuestionToBucket(text: string, bucketId: string) {
         const currentQuestions = await this.getQuestionsForBucket(bucketId);
         return await this.save({text, bucketId, priority: currentQuestions.length} as IQuestion);
+    }
+
+    async addQuestionToForm(text: string, formId: string) {
+        const currentQuestions = await this.getQuestionsForForm(formId);
+        return await this.save({text, formId, priority: 1000 + currentQuestions.length} as IQuestion);
     }
 
     async deleteQuestion(questionId) {
@@ -35,8 +34,14 @@ export class QuestionControllerService extends BaseControllerService<IQuestion> 
         await this.updateMany(higherPriorityQuestions);
     }
 
+    async getQuestionsForBucket(bucketId: string): Promise<IQuestion[]> {
+        return this.model.find({
+            bucketId: bucketId
+        })
+    }
+
     async getQuestionsForForm(formId: string): Promise<IQuestion[]> {
-        let questions = [];
+        let questions = [await this.model.find({formId: formId})];
         const formService = new FormControllerService();
         const currentForm = await formService.model.findById(formId);
 
