@@ -5,8 +5,6 @@ import model from '../models/form';
 import {IForm} from "../models/form";
 import {BaseControllerService} from "./base.controller.service";
 import {BucketControllerService} from "./bucket.controller.service";
-import {QuestionControllerService} from "./question.controller.service";
-import {IQuestion} from "../models/question";
 
 export class FormControllerService extends BaseControllerService<IForm> {
 
@@ -39,7 +37,7 @@ export class FormControllerService extends BaseControllerService<IForm> {
     async duplicateForm(formId: string): Promise<IForm> {
         const currentForm = await this.model.findById(formId);
         const newFormName = await this.generateDuplicateFormName(currentForm.name);
-        return await this.save({..._omit(currentForm.toObject(), ['_id', 'link']), name: newFormName, creationTime: Date.now()} as IForm);
+        return await this.save({..._omit(currentForm.toObject(), ['_id', 'link']), name: newFormName, eventDate: Date.now()} as IForm);
     }
 
     async generateDuplicateFormName(designatedName: string) {

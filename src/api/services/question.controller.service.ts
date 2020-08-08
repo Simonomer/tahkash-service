@@ -10,14 +10,14 @@ export class QuestionControllerService extends BaseControllerService<IQuestion> 
 
     model: Model<IQuestion> = model;
 
-    async addQuestionToBucket(text: string, bucketId: string) {
+    async addQuestionToBucket(text: string, bucketId: string, eventDate: Date) {
         const currentQuestions = await this.getQuestionsForBucket(bucketId);
-        return await this.save({text, bucketId, priority: currentQuestions.length} as IQuestion);
+        return await this.save({text, bucketId, priority: currentQuestions.length, eventDate: eventDate} as IQuestion);
     }
 
-    async addQuestionToForm(text: string, formId: string) {
+    async addQuestionToForm(text: string, formId: string, eventDate: Date) {
         const currentQuestions = await this.getQuestionsForForm(formId);
-        return await this.save({text, formId, priority: 1000 + currentQuestions.length} as IQuestion);
+        return await this.save({text, formId, priority: 1000 + currentQuestions.length, eventDate: eventDate} as IQuestion);
     }
 
     async deleteQuestion(questionId) {

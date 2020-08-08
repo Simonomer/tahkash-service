@@ -6,12 +6,14 @@ export interface IQuestion extends Document {
     bucketId: IBucket["_id"],
     formId: IForm["_id"],
     text: string,
-    priority: number
+    priority: number,
+    eventDate: Date
 }
 
 const questionSchema: Schema = new Schema({
     bucketId: { type: Schema.Types.ObjectId },
     formId: { type: Schema.Types.ObjectId },
+    eventDate: { type: Date },
     text: { type: String, required: true },
     priority: { type: Number, required: true }
 });

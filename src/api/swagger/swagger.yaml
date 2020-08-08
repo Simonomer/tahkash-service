@@ -475,7 +475,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  /answers/{formId}:
+  /answers/form/{formId}:
     x-swagger-router-controller: answer.controller
     get:
       description: Gets all the answers mapped with it's questions all by form id
@@ -485,6 +485,24 @@ paths:
       parameters:
         - in: path
           name: formId
+          type: string
+          required: true
+      responses:
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /answers/bucket/{bucketId}:
+    x-swagger-router-controller: answer.controller
+    get:
+      description: Gets all the answers mapped with it's questions all by bucket id
+      operationId: getAnswersForBucket
+      tags:
+        - Answer
+      parameters:
+        - in: path
+          name: bucketId
           type: string
           required: true
       responses:
@@ -562,6 +580,8 @@ definitions:
       rating:
         type: number
       questionId:
+        type: string
+      formId:
         type: string
 
   ErrorResponse:

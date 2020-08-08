@@ -14,3 +14,10 @@ export async function getAnswersForForm(req, res) {
     const questionsWithAnswers = await service.getAnswersForForm(formId);
     await res.status(statusCodes.OK).json(questionsWithAnswers);
 }
+
+export async function getAnswersForBucket(req, res) {
+    const service = new AnswerControllerService();
+    const bucketId = req.swagger.params.bucketId.value;
+    const questionsWithAnswers = await service.getAnswersForBucket(bucketId);
+    await res.status(statusCodes.OK).json(questionsWithAnswers);
+}

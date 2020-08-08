@@ -3,12 +3,14 @@ import {IQuestion} from "./question";
 
 export interface IAnswer extends Document {
     questionId: IQuestion["_id"],
+    formId: IQuestion["_id"],
     text: string,
     rating: number
 }
 
 const answerSchema: Schema = new Schema({
     questionId: { type: Schema.Types.ObjectId, required: true },
+    formId: { type: Schema.Types.ObjectId, required: true },
     name: { type: String, required: true },
     rating: { type: Number }
 })
